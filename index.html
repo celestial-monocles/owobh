@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>OwO Bot Helper — Top Fixed Buttons</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            user-select: none;
+        }
+        body {
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+            background: #1e1f2c;
+            margin: 0;
+            padding: 0;
+            padding-top: 110px; /* space for fixed top bar */
+            min-height: 100vh;
+        }
+        
+        /* FIXED TOP BUTTON BAR — keyboard CANNOT cover this! */
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: #1a1b2e;
+            padding: 12px 16px;
+            padding-top: calc(12px + env(safe-area-inset-top, 0px));
+            display: flex;
+            gap: 12px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+            border-bottom: 2px solid #6c5ce7;
+            z-index: 1000;
+        }
+        
+        .top-btn {
+            flex: 1;
+            padding: 16px 12px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 1.2rem;
+            cursor: pointer;
+            touch-action: manipulation;
+            font-family: monospace;
+            transition: 0.05s linear;
+        }
+        
+        .top-btn:active {
+            transform: scale(0.97);
+        }
+        
+        .top-btn:disabled {
+            opacity: 0.4;
+            transform: none;
+            cursor: not-allowed;
+        }
+        
+        .btn-b {
+            background: #6c5ce7;
+            color: white;
+        }
+        
+        .btn-h {
+            background: #00b894;
+            color: white;
+        }
+        
+        /* Main scrollable content */
+        .content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 16px;
+        }
+        
+        h1 {
+            text-align: center;
+            font-size: 1.4rem;
+            margin: 0 0 0.2rem;
+            color: #f0d3ff;
+        }
+        .sub {
+            text-align: center;
+            color: #b4b4e0;
+            font-size: 0.8rem;
+            margin-bottom: 1rem;
+        }
+        
+        .card {
+            background: #2a2b3e;
+            border-radius: 1.3rem;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-left: 5px solid;
+        }
+        .card-b { border-left-color: #6c5ce7; }
+        .card-h { border-left-color: #00b894; }
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .cmd {
+            font-size: 1.2rem;
+            font-weight: bold;
+            background: #0f0f1a;
+            padding: 0.2rem 0.8rem;
+            border-radius: 1rem;
+            font-family: monospace;
+        }
+        .cmd-b { color: #a29bfe; }
+        .cmd-h { color: #55efc4; }
+        
+        .timer {
+            font-family: monospace;
+            font-size: 1.1rem;
+            font-weight: bold;
+            background: #00000055;
+            padding: 0.2rem 0.7rem;
+            border-radius: 2rem;
+        }
+        .timer-ready { color: #6fcf97; }
+        .timer-active { color: #ffb347; }
+        
+        .preview {
+            font-family: monospace;
+            font-size: 0.85rem;
+            background: #0b0c15;
+            padding: 0.8rem;
+            border-radius: 0.9rem;
+            color: #e7e7ff;
+            margin: 10px 0;
+            word-break: break-word;
+        }
+        .next-hint {
+            font-size: 0.65rem;
+            color: #9d9dc7;
+            text-align: right;
+        }
+        
+        .edit-panel {
+            background: #1a1b2a;
+            border-radius: 1.2rem;
+            padding: 0.8rem 1rem;
+            margin-top: 1rem;
+            margin-bottom: 30px;
+        }
+        .edit-title {
+            font-weight: bold;
+            color: #cbcbff;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+        }
+        .edit-group {
+            background: #0f101c;
+            border-radius: 1rem;
+            padding: 8px;
+            margin-bottom: 12px;
+        }
+        .edit-label {
+            font-size: 0.75rem;
+            color: #aaaae6;
+            margin-bottom: 4px;
+        }
+        .phrase-list {
+            width: 100%;
+            background: #05060c;
+            color: #e2e2ff;
+            border: 1px solid #4a4b70;
+            border-radius: 0.8rem;
+            padding: 8px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            resize: vertical;
+        }
+        .refresh-btn {
+            background: #3d3e66;
+            padding: 0.4rem 1rem;
+            font-size: 0.75rem;
+            margin-top: 6px;
+            width: fit-content;
+            border: none;
+            border-radius: 1rem;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .warning {
+            background: #ff4755aa;
+            color: white;
+            text-align: center;
+            padding: 8px;
+            border-radius: 30px;
+            font-size: 0.7rem;
+            margin-bottom: 15px;
+        }
+        
+        .note {
+            font-size: 0.65rem;
+            color: #8f8fb0;
+            text-align: center;
+            margin-top: 12px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- FIXED TOP BUTTON BAR — keyboard will NEVER cover this! -->
+<div class="top-bar">
+    <button id="topBtnB" class="top-btn btn-b">📋 OWO B</button>
+    <button id="topBtnH" class="top-btn btn-h">📋 OWO H</button>
+</div>
+
+<div class="content">
+    <h1>🐾 OwO Bot Helper</h1>
+    <div class="sub">📋 BUTTONS AT TOP — keyboard CANNOT block them!</div>
+    
+    <div class="warning">
+        ⚠️ BUTTONS ARE FIXED AT THE VERY TOP OF YOUR SCREEN ⚠️
+    </div>
+
+    <!-- OWO B Card -->
+    <div class="card card-b">
+        <div class="card-header">
+            <span class="cmd cmd-b">owo b</span>
+            <span id="timerB" class="timer timer-ready">✓ READY</span>
+        </div>
+        <div class="preview" id="previewB">owo b loading...</div>
+        <div class="next-hint" id="nextHintB">➡️ Next: --</div>
+    </div>
+
+    <!-- OWO H Card -->
+    <div class="card card-h">
+        <div class="card-header">
+            <span class="cmd cmd-h">owo h</span>
+            <span id="timerH" class="timer timer-ready">✓ READY</span>
+        </div>
+        <div class="preview" id="previewH">owo h loading...</div>
+        <div class="next-hint" id="nextHintH">➡️ Next: --</div>
+    </div>
+
+    <!-- Editable lists -->
+    <div class="edit-panel">
+        <div class="edit-title">✏️ Customize phrases (one per line)</div>
+        <div class="edit-group">
+            <div class="edit-label">📜 owo b</div>
+            <textarea id="listB" class="phrase-list" rows="2" placeholder="One phrase per line..."></textarea>
+            <button id="refreshB" class="refresh-btn">🔄 Update B list</button>
+        </div>
+        <div class="edit-group">
+            <div class="edit-label">🌿 owo h</div>
+            <textarea id="listH" class="phrase-list" rows="2" placeholder="One phrase per line..."></textarea>
+            <button id="refreshH" class="refresh-btn">🔄 Update H list</button>
+        </div>
+        <div class="note">
+            💡 Edit lists above — changes save automatically.<br>
+            👆 <strong>USE THE TWO BIG BUTTONS AT THE VERY TOP</strong> — the keyboard will NEVER cover them because they're fixed at the top!
+        </div>
+    </div>
+</div>
+
+<script>
+    // Default phrases
+    const DEFAULT_B = [
+        "Giraffes sleep like 20 minutes a day. Imagine being that tall AND sleep-deprived.",
+        "it rains on a rainy day",
+        "owo what's this",
+        "hug the wolf",
+        "rainbow dash pegasus",
+        "soft paws in the snow"
+    ];
+
+    const DEFAULT_H = [
+        "Crows use tools and can bend wires into hooks. DIY geniuses.",
+        "deep in the forest",
+        "sniff for treasures",
+        "a wild fox appears",
+        "hunt for golden carrots",
+        "stealthy cat paws"
+    ];
+
+    let phrasesB = [...DEFAULT_B];
+    let phrasesH = [...DEFAULT_H];
+    let indexB = 0, indexH = 0;
+    let cooldownB = false, cooldownH = false;
+    let timerIntervalB = null, timerIntervalH = null;
+    let remainingB = 0, remainingH = 0;
+
+    // DOM elements
+    const previewBDiv = document.getElementById('previewB');
+    const previewHDiv = document.getElementById('previewH');
+    const timerBDiv = document.getElementById('timerB');
+    const timerHDiv = document.getElementById('timerH');
+    const nextHintB = document.getElementById('nextHintB');
+    const nextHintH = document.getElementById('nextHintH');
+    const topBtnB = document.getElementById('topBtnB');
+    const topBtnH = document.getElementById('topBtnH');
+    const listBTextarea = document.getElementById('listB');
+    const listHTextarea = document.getElementById('listH');
+    const refreshBtnB = document.getElementById('refreshB');
+    const refreshBtnH = document.getElementById('refreshH');
+
+    function updateDisplayB() {
+        if (!phrasesB.length) phrasesB = ["add a phrase"];
+        const current = phrasesB[indexB % phrasesB.length];
+        previewBDiv.innerText = `owo b ${current}`;
+        const nextIdx = (indexB + 1) % phrasesB.length;
+        nextHintB.innerText = `➡️ Next: owo b ${phrasesB[nextIdx]}`;
+        if (cooldownB) {
+            topBtnB.innerText = `⏱️ ${remainingB}s`;
+        } else {
+            topBtnB.innerText = `📋 OWO B`;
+        }
+    }
+    
+    function updateDisplayH() {
+        if (!phrasesH.length) phrasesH = ["add a phrase"];
+        const current = phrasesH[indexH % phrasesH.length];
+        previewHDiv.innerText = `owo h ${current}`;
+        const nextIdx = (indexH + 1) % phrasesH.length;
+        nextHintH.innerText = `➡️ Next: owo h ${phrasesH[nextIdx]}`;
+        if (cooldownH) {
+            topBtnH.innerText = `⏱️ ${remainingH}s`;
+        } else {
+            topBtnH.innerText = `📋 OWO H`;
+        }
+    }
+    
+    function advanceB() {
+        if (phrasesB.length) {
+            indexB = (indexB + 1) % phrasesB.length;
+            updateDisplayB();
+        }
+    }
+    
+    function advanceH() {
+        if (phrasesH.length) {
+            indexH = (indexH + 1) % phrasesH.length;
+            updateDisplayH();
+        }
+    }
+    
+    async function copyText(text, type) {
+        try {
+            await navigator.clipboard.writeText(text);
+            const btn = type === 'B' ? topBtnB : topBtnH;
+            const original = btn.innerText;
+            btn.innerText = '✓ DONE!';
+            setTimeout(() => {
+                if (type === 'B') updateDisplayB();
+                else updateDisplayH();
+            }, 500);
+            return true;
+        } catch(err) {
+            alert("Could not copy. Try again.");
+            return false;
+        }
+    }
+    
+    function startCooldownB() {
+        if (timerIntervalB) clearInterval(timerIntervalB);
+        cooldownB = true;
+        remainingB = 15;
+        topBtnB.disabled = true;
+        const tick = () => {
+            if (remainingB <= 1) {
+                clearInterval(timerIntervalB);
+                timerIntervalB = null;
+                cooldownB = false;
+                topBtnB.disabled = false;
+                timerBDiv.innerHTML = '✓ READY';
+                timerBDiv.className = 'timer timer-ready';
+                updateDisplayB();
+            } else {
+                remainingB--;
+                timerBDiv.innerHTML = `⏱️ ${remainingB}s`;
+                timerBDiv.className = 'timer timer-active';
+                updateDisplayB();
+            }
+        };
+        tick();
+        timerIntervalB = setInterval(tick, 1000);
+    }
+    
+    function startCooldownH() {
+        if (timerIntervalH) clearInterval(timerIntervalH);
+        cooldownH = true;
+        remainingH = 15;
+        topBtnH.disabled = true;
+        const tick = () => {
+            if (remainingH <= 1) {
+                clearInterval(timerIntervalH);
+                timerIntervalH = null;
+                cooldownH = false;
+                topBtnH.disabled = false;
+                timerHDiv.innerHTML = '✓ READY';
+                timerHDiv.className = 'timer timer-ready';
+                updateDisplayH();
+            } else {
+                remainingH--;
+                timerHDiv.innerHTML = `⏱️ ${remainingH}s`;
+                timerHDiv.className = 'timer timer-active';
+                updateDisplayH();
+            }
+        };
+        tick();
+        timerIntervalH = setInterval(tick, 1000);
+    }
+    
+    async function onCopyB() {
+        if (cooldownB) return;
+        const text = previewBDiv.innerText;
+        const ok = await copyText(text, 'B');
+        if (ok) {
+            startCooldownB();
+            advanceB();
+        }
+    }
+    
+    async function onCopyH() {
+        if (cooldownH) return;
+        const text = previewHDiv.innerText;
+        const ok = await copyText(text, 'H');
+        if (ok) {
+            startCooldownH();
+            advanceH();
+        }
+    }
+    
+    // Storage
+    function saveLists() {
+        localStorage.setItem('owo_b_phrases', JSON.stringify(phrasesB));
+        localStorage.setItem('owo_h_phrases', JSON.stringify(phrasesH));
+    }
+    
+    function loadLists() {
+        const storedB = localStorage.getItem('owo_b_phrases');
+        const storedH = localStorage.getItem('owo_h_phrases');
+        if (storedB) {
+            try { let p = JSON.parse(storedB); if (p.length) phrasesB = p; } catch(e) {}
+        }
+        if (storedH) {
+            try { let p = JSON.parse(storedH); if (p.length) phrasesH = p; } catch(e) {}
+        }
+        if (!phrasesB.length) phrasesB = [...DEFAULT_B];
+        if (!phrasesH.length) phrasesH = [...DEFAULT_H];
+    }
+    
+    function refreshTextareas() {
+        listBTextarea.value = phrasesB.join('\n');
+        listHTextarea.value = phrasesH.join('\n');
+    }
+    
+    function updateListB() {
+        let lines = listBTextarea.value.split(/\r?\n/).filter(l => l.trim().length > 0);
+        if (lines.length === 0) lines = ["Giraffes sleep like 20 minutes a day."];
+        phrasesB = lines;
+        indexB = 0;
+        updateDisplayB();
+        saveLists();
+        refreshTextareas();
+    }
+    
+    function updateListH() {
+        let lines = listHTextarea.value.split(/\r?\n/).filter(l => l.trim().length > 0);
+        if (lines.length === 0) lines = ["Crows use tools and can bend wires into hooks."];
+        phrasesH = lines;
+        indexH = 0;
+        updateDisplayH();
+        saveLists();
+        refreshTextareas();
+    }
+    
+    function init() {
+        loadLists();
+        refreshTextareas();
+        indexB = 0; indexH = 0;
+        updateDisplayB();
+        updateDisplayH();
+        cooldownB = false; cooldownH = false;
+        topBtnB.disabled = false;
+        topBtnH.disabled = false;
+        timerBDiv.innerHTML = '✓ READY';
+        timerHDiv.innerHTML = '✓ READY';
+        timerBDiv.className = 'timer timer-ready';
+        timerHDiv.className = 'timer timer-ready';
+    }
+    
+    topBtnB.addEventListener('click', onCopyB);
+    topBtnH.addEventListener('click', onCopyH);
+    refreshBtnB.addEventListener('click', updateListB);
+    refreshBtnH.addEventListener('click', updateListH);
+    
+    init();
+</script>
+</body>
+</html>
